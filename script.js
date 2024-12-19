@@ -1,6 +1,7 @@
 import * as pc from "playcanvas";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("hey");
   const appElement = await document.querySelector("pc-app").ready();
   const app = await appElement.app;
 
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(app);
     // During asset preloading
     app.assets.loadFromUrl(
-      "/assets/Roboto-Black.json",
+      "./assets/Roboto-Black.json",
       "font",
       function (err, asset) {
         //console.log(asset.id);

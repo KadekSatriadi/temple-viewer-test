@@ -5,76 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>SuperSplat Viewer</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                touch-action: none;
-            }
-            body {
-                overflow: hidden;
-                background-color: black;
-            }
-            .hidden {
-                display: none !important;
-            }
-            #infoPanel {
-                font-family: 'Arial', sans-serif;
-                color: #2c3e50;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.3);
-                z-index: 999;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            #infoPanelContent {
-                background: rgba(255, 255, 255, 0.95);
-                padding: 20px;
-                border-radius: 8px;
-                border: 1px solid #ddd;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-            }
-            #infoPanelContent h3 {
-                margin: 0 0 12px 0;
-                color: #2c3e50;
-            }
-            .control-item {
-                display: flex;
-                justify-content: space-between;
-                gap: 24px;
-                line-height: 1.5;
-            }
-            .control-action {
-                text-align: left;
-            }
-            .control-key {
-                text-align: right;
-                color: #666;
-            }
-            #loadingIndicator {
-                font-family: 'Arial', sans-serif;
-                color: #2c3e50;
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(255, 255, 255, 0.95);
-                padding: 20px;
-                border-radius: 8px;
-                border: 1px solid #ddd;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                z-index: 1000;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
         <script type="importmap">
             {
                 "imports": {
@@ -96,7 +27,7 @@
                 <!-- Camera (with XR support) -->
                 <pc-entity name="camera root">
                     <pc-entity name="camera">
-                        <pc-camera clear-color="0 0 0 0 0" fov="50.00"></pc-camera>
+                        <pc-camera clear-color="0 0 0 0" fov="50.00"></pc-camera>
                         <pc-scripts>
                             <pc-script name="cameraControls"></pc-script>
                         </pc-scripts>
