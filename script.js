@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </svg>`,
       title: "Enter VR",
       onClick: () =>{
-        if(panelParent != null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
+        if(panelParent == null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
         app.xr.start(
           app.root.findComponent("camera"),
           "immersive-vr",
@@ -356,7 +356,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       title: "Enter AR",
       onClick: async () => {
         try {
-          if(panelParent != null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
+          if(panelParent == null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
           entity.camera.clearColor = new pc.Color(0,0,0,0);
           app.xr.start(
             app.root.findComponent("camera"),
