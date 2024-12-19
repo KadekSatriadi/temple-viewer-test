@@ -1,10 +1,14 @@
+//**
+// Based on supersplat export
+// edited by Kadek Satriadi
+//  */
 import * as pc from "playcanvas";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("hey");
   const appElement = await document.querySelector("pc-app").ready();
   const app = await appElement.app;
-
+  const backgroundColor = new pc.Color(1,1,1,1);
   const entityElement = await document
     .querySelector('pc-entity[name="camera"]')
     .ready();
@@ -12,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const resetPosition = null;
   const resetTarget = null;
-  const templeInfoAsset = app.assets.find('temple-info');
+  const templeInfoAsset = app.assets.find("temple-info");
   const logoAsset = app.assets.find("logo");
   console.log(logoAsset);
 
@@ -24,7 +28,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       "./assets/Roboto-Black.json",
       "font",
       function (err, asset) {
-        //console.log(asset.id);
         const fontAssetId = asset.id;
         //Parameters
         const panelScale = 0.003;
@@ -37,55 +40,92 @@ document.addEventListener("DOMContentLoaded", async () => {
         const bspace = 6;
 
         const logoConfig = {
-            width: 468, 
-            height: 276, 
-            scale: 0.2,
-            localPosition:{
-                x: -100, y: -35, z:0
-            }
-        }
-
-        const textConfig = {
-            type:  pc.ELEMENTTYPE_TEXT,
-            color: new pc.Color(1, 1, 1),
-            opacity: 1,
-            outlineColor: new pc.Color(0.2,0.2,0.2),
-            outlineThickness: 0.001,
-            fontAsset: fontAssetId,
-            wrapLines: true,
-            anchor: new pc.Vec4(0.5, 0.5, 0.5, 0.5), // centered anchor
+          width: 468,
+          height: 276,
+          scale: 0.2,
+          localPosition: {
+            x: -100,
+            y: -35,
+            z: 0,
+          },
         };
 
-        function createTextEntity(config, name, text, fontSize){
-            const entity = new pc.Entity(name);
-            const elm = entity.addComponent("element", config);
-            elm.text = text;
-            elm.fontSize = fontSize;
-            return {
-                entity: entity,
-                elm: elm
-            }
+        const textConfig = {
+          type: pc.ELEMENTTYPE_TEXT,
+          color: new pc.Color(1, 1, 1),
+          opacity: 1,
+          outlineColor: new pc.Color(0.3, 0.3, 0.3),
+          outlineThickness: 0.1,
+          fontAsset: fontAssetId,
+          wrapLines: true,
+          anchor: new pc.Vec4(0.5, 0.5, 0.5, 0.5), // centered anchor
+        };
+
+        function createTextEntity(config, name, text, fontSize) {
+          const entity = new pc.Entity(name);
+          const elm = entity.addComponent("element", config);
+          elm.text = text;
+          elm.fontSize = fontSize;
+          return {
+            entity: entity,
+            elm: elm,
+          };
         }
 
         // Create Logo
         const logoEntity = new pc.Entity("logo");
         logoEntity.addComponent("element", {
-            type: pc.ELEMENTTYPE_IMAGE,
-            textureAsset: logoAsset.id,
-            width: logoConfig.width * logoConfig.scale,
-            height: logoConfig.height * logoConfig.scale
-        })
+          type: pc.ELEMENTTYPE_IMAGE,
+          textureAsset: logoAsset.id,
+          width: logoConfig.width * logoConfig.scale,
+          height: logoConfig.height * logoConfig.scale,
+        });
 
         // Create Parent
         const panelParent = new pc.Entity("InfoPanel");
-        const mainTextEntity = createTextEntity(textConfig, "main", templeInfo.name, mainTextFontSize).entity;
-        const secondaryTextEntity = createTextEntity(textConfig, "second", templeInfo.type, secondaryTextFontSize).entity;
-        const body1 = createTextEntity(textConfig, "body1", templeInfo.description, bodyTextFontSize).entity;
-        const body2 = createTextEntity(textConfig, "body2", `Dikontribusikan oleh ${templeInfo.contributor}`, bodyTextFontSize).entity;
-        const body3 = createTextEntity(textConfig, "body3", `Pada tanggal ${templeInfo.contributiondate}`, bodyTextFontSize).entity;
-        const body4 = createTextEntity(textConfig, "body4", `Pura terletak di ${templeInfo.address}`, bodyTextFontSize).entity;
+        const mainTextEntity = createTextEntity(
+          textConfig,
+          "main",
+          templeInfo.name,
+          mainTextFontSize
+        ).entity;
+        const secondaryTextEntity = createTextEntity(
+          textConfig,
+          "second",
+          templeInfo.type,
+          secondaryTextFontSize
+        ).entity;
+        const body1 = createTextEntity(
+          textConfig,
+          "body1",
+          templeInfo.description,
+          bodyTextFontSize
+        ).entity;
+        const body2 = createTextEntity(
+          textConfig,
+          "body2",
+          `Dikontribusikan oleh ${templeInfo.contributor}`,
+          bodyTextFontSize
+        ).entity;
+        const body3 = createTextEntity(
+          textConfig,
+          "body3",
+          `Pada tanggal ${templeInfo.contributiondate}`,
+          bodyTextFontSize
+        ).entity;
+        const body4 = createTextEntity(
+          textConfig,
+          "body4",
+          `Pura terletak di ${templeInfo.address}`,
+          bodyTextFontSize
+        ).entity;
 
-        const footer = createTextEntity(textConfig, "body4", `PID: ${templeInfo.PID}`, footerTextFontSize).entity;
+        const footer = createTextEntity(
+          textConfig,
+          "body4",
+          `PID: ${templeInfo.PID}`,
+          footerTextFontSize
+        ).entity;
 
         // Add to parent
         panelParent.setLocalScale(panelScale, panelScale, panelScale);
@@ -99,21 +139,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         panelParent.addChild(body4);
         panelParent.addChild(footer);
 
-
         // Set scale and pos
         mainTextEntity.setLocalPosition(0, 0, 0);
         secondaryTextEntity.setLocalPosition(0, mainSecSpace, 0);
         body1.setLocalPosition(0, secTerSpace, 0);
-        body2.setLocalPosition(0, secTerSpace - (bspace * 1), 0);
-        body3.setLocalPosition(0, secTerSpace - (bspace * 2), 0);
-        body4.setLocalPosition(0, secTerSpace - (bspace * 3), 0);
-        footer.setLocalPosition(0, secTerSpace - (bspace * 4), 0);
-        logoEntity.setLocalPosition(logoConfig.localPosition.x, logoConfig.localPosition.y, logoConfig.localPosition.z);
+        body2.setLocalPosition(0, secTerSpace - bspace * 1, 0);
+        body3.setLocalPosition(0, secTerSpace - bspace * 2, 0);
+        body4.setLocalPosition(0, secTerSpace - bspace * 3, 0);
+        footer.setLocalPosition(0, secTerSpace - bspace * 4, 0);
+        logoEntity.setLocalPosition(
+          logoConfig.localPosition.x,
+          logoConfig.localPosition.y,
+          logoConfig.localPosition.z
+        );
 
         const splatEntity = app.root.findByName("splat");
         if (splatEntity) {
           splatEntity.addChild(panelParent);
-          panelParent.setLocalPosition(0, -bbox.halfExtents.y * 0.5, -bbox.halfExtents.z);
+          panelParent.setLocalPosition(
+            0,
+            -bbox.halfExtents.y * 0.5,
+            -bbox.halfExtents.z
+          );
         }
       }
     );
@@ -128,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       this.entity.script.cameraControls.sceneSize = sceneSize;
       this.entity.script.cameraControls.focus(
         bbox.center,
-        new pc.Vec3(2, 1, 2).normalize().mulScalar(distance).add(bbox.center)
+        new pc.Vec3(0.5, 0.2, 2).normalize().mulScalar(distance).add(bbox.center)
       );
     }
 
@@ -155,9 +202,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const bbox = this.calcBound();
 
       // configure camera
+      this.entity.camera.clearColor = backgroundColor;
       this.entity.camera.horizontalFov = true;
       this.entity.camera.farClip = bbox.halfExtents.length() * 20;
-      this.entity.camera.nearClip = this.entity.camera.farClip * 0.001;
+      this.entity.camera.nearClip = this.entity.camera.farClip * 0.0001;
       this.entity.camera.toneMapping = 6;
 
       if (bbox.halfExtents.length() > 100 || resetPosition || resetTarget) {
@@ -177,12 +225,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
 
-      console.log(templeInfoAsset);
       if (templeInfoAsset.loaded) {
-        console.log(templeInfoAsset.resources[0])
         createInformationPanel(bbox, templeInfoAsset.resources[0]);
-    } 
-
+      }
     }
 
     postInitialize() {
@@ -281,6 +326,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       title: "Enter AR",
       onClick: async () => {
         try {
+          entity.camera.clearColor = new pc.Color(0,0,0,0);
           app.xr.start(
             app.root.findComponent("camera"),
             "immersive-ar",
@@ -298,6 +344,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       app.xr.end();
+      entity.camera.clearColor = backgroundColor;
+
     }
   });
 
