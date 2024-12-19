@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const templeInfoAsset = app.assets.find("temple-info");
   const logoAsset = app.assets.find("texture-logo");
   const panelAsset = app.assets.find("texture-panel");
+  const splatEntity = app.root.findByName("splat");
+  splatEntity.setLocalPosition(0, 1, -2);
 
   function createInformationPanel(bbox, templeInfo) {
     // Create text
@@ -184,7 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           panelBgConfig.localPosition.z
         )
 
-        const splatEntity = app.root.findByName("splat");
         if (splatEntity) {
           splatEntity.addChild(panelParent);
           panelParent.setLocalPosition(
@@ -331,12 +332,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Add VR button if available
   if (app.xr.isAvailable("immersive-vr")) {
     const vrButton = createButton({
-      icon: `<svg width="32" height="32" viewBox="0 0 48 48">
-                <path d="M30,34 L26,30 L22,30 L18,34 L14,34 C11.7908610,34 10,32.2091390 10,30 L10,18 C10,15.7908610 11.7908610,14 14,14 L34,14 C36.2091390,14 38,15.7908610 38,18 L38,30 C38,32.2091390 36.2091390,34 34,34 L30,34 Z M44,28 C44,29.1045694 43.1045694,30 42,30 C40.8954306,30 40,29.1045694 40,28 L40,20 C40,18.8954305 40.8954306,18 42,18 C43.1045694,18 44,18.8954305 44,20 L44,28 Z M8,28 C8,29.1045694 7.10456940,30 6,30 C4.89543060,30 4,29.1045694 4,28 L4,20 C4,18.8954305 4.89543060,18 6,18 C7.10456940,18 8,18.8954305 8,20 L8,28 Z" fill="currentColor">
-            </svg>`,
+      icon: `VR`,
       title: "Enter VR",
       onClick: () =>{
         if(panelParent == null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
+        entity.camera.clearColor = new pc.Color(1,1,1,1);
+
         app.xr.start(
           app.root.findComponent("camera"),
           "immersive-vr",
@@ -350,9 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Add AR button if available
   if (app.xr.isAvailable("immersive-ar")) {
     const arButton = createButton({
-      icon: `<svg width="32" height="32" viewBox="0 0 24 24">
-                <path d="M9.5,6.5v3h-3v-3H9.5 M11,5H5v6h6V5L11,5z M9.5,14.5v3h-3v-3H9.5 M11,13H5v6h6V13L11,13z M17.5,6.5v3h-3v-3H17.5 M19,5h-6v6h6V5L19,5z M13,13h1.5v1.5H13V13z M14.5,14.5H16V16h-1.5V14.5z M16,13h1.5v1.5H16V13z M17.5,14.5H19V16h-1.5V14.5z M16,16h1.5v1.5H16V16z M17.5,17.5H19V19h-1.5V17.5z M13,16h1.5v1.5H13V16z M14.5,17.5H16V19h-1.5V17.5z M13,19h1.5v1.5H13V19z M14.5,20.5H16V22h-1.5V20.5z M16,19h1.5v1.5H16V19z M17.5,20.5H19V22h-1.5V20.5z" fill="currentColor"/>
-            </svg>`,
+      icon: `AR`,
       title: "Enter AR",
       onClick: async () => {
         try {
