@@ -5,7 +5,6 @@
 import * as pc from "playcanvas";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("hey");
   const appElement = await document.querySelector("pc-app").ready();
   const app = await appElement.app;
   const backgroundColor = new pc.Color(1,1,1,1);
@@ -14,11 +13,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     .ready();
   const entity = entityElement.entity;
 
+  let panelParent = null;
+  let bbox = null;
+
   const resetPosition = null;
   const resetTarget = null;
   const templeInfoAsset = app.assets.find("temple-info");
-  const logoAsset = app.assets.find("logo");
-  console.log(logoAsset);
+  const logoAsset = app.assets.find("texture-logo");
+  const panelAsset = app.assets.find("texture-panel");
 
   function createInformationPanel(bbox, templeInfo) {
     // Create text
@@ -37,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const footerTextFontSize = 3;
         const mainSecSpace = -10;
         const secTerSpace = mainSecSpace - 8;
-        const bspace = 6;
+        const bspace = 7;
 
         const logoConfig = {
           width: 468,
@@ -46,6 +48,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           localPosition: {
             x: -100,
             y: -35,
+            z: 0,
+          },
+        };
+
+        const panelBgConfig = {
+          width: 2384,
+          height: 835,
+          scale: 0.11,
+          color: new pc.Color(0.1, 0.1, 0.1),
+          localPosition: {
+            x: -112,
+            y: -56,
             z: 0,
           },
         };
@@ -81,8 +95,19 @@ document.addEventListener("DOMContentLoaded", async () => {
           height: logoConfig.height * logoConfig.scale,
         });
 
+        // Create Panel Background
+        const panelBackgroundEntity = new pc.Entity("panelBackground");
+        panelBackgroundEntity.addComponent("element", {
+          type: pc.ELEMENTTYPE_IMAGE,
+          textureAsset: panelAsset.id,
+          width: panelBgConfig.width * panelBgConfig.scale,
+          height: panelBgConfig.height * panelBgConfig.scale,
+          opacity: 0.7,
+          color: panelBgConfig.color
+        });
+
         // Create Parent
-        const panelParent = new pc.Entity("InfoPanel");
+        panelParent = new pc.Entity("InfoPanel");
         const mainTextEntity = createTextEntity(
           textConfig,
           "main",
@@ -130,6 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Add to parent
         panelParent.setLocalScale(panelScale, panelScale, panelScale);
         panelParent.setEulerAngles(0, 180, 180);
+        panelParent.addChild(panelBackgroundEntity);
         panelParent.addChild(logoEntity);
         panelParent.addChild(mainTextEntity);
         panelParent.addChild(secondaryTextEntity);
@@ -152,6 +178,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           logoConfig.localPosition.y,
           logoConfig.localPosition.z
         );
+        panelBackgroundEntity.setLocalPosition(
+          panelBgConfig.localPosition.x,
+          panelBgConfig.localPosition.y,
+          panelBgConfig.localPosition.z
+        )
 
         const splatEntity = app.root.findByName("splat");
         if (splatEntity) {
@@ -173,8 +204,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const distance =
         sceneSize / Math.sin((this.entity.camera.fov / 180) * Math.PI * 0.5);
       this.entity.script.cameraControls.sceneSize = sceneSize;
+      const c = new pc.Vec3(bbox.center.x + 0.2, bbox.center.y, bbox.center.z);
       this.entity.script.cameraControls.focus(
-        bbox.center,
+        c,
         new pc.Vec3(0.5, 0.2, 2).normalize().mulScalar(distance).add(bbox.center)
       );
     }
@@ -184,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       this.entity.script.cameraControls.sceneSize = sceneSize * 0.2;
       this.entity.script.cameraControls.focus(
         resetTarget ?? pc.Vec3.ZERO,
-        resetPosition ?? new pc.Vec3(2, 1, 2)
+        resetPosition ?? new pc.Vec3(0, 0.1, 2)
       );
     }
 
@@ -199,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initCamera() {
       document.getElementById("loadingIndicator").classList.add("hidden");
 
-      const bbox = this.calcBound();
+      bbox = this.calcBound();
 
       // configure camera
       this.entity.camera.clearColor = backgroundColor;
@@ -224,10 +256,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             break;
         }
       });
-
-      if (templeInfoAsset.loaded) {
-        createInformationPanel(bbox, templeInfoAsset.resources[0]);
-      }
     }
 
     postInitialize() {
@@ -307,12 +335,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <path d="M30,34 L26,30 L22,30 L18,34 L14,34 C11.7908610,34 10,32.2091390 10,30 L10,18 C10,15.7908610 11.7908610,14 14,14 L34,14 C36.2091390,14 38,15.7908610 38,18 L38,30 C38,32.2091390 36.2091390,34 34,34 L30,34 Z M44,28 C44,29.1045694 43.1045694,30 42,30 C40.8954306,30 40,29.1045694 40,28 L40,20 C40,18.8954305 40.8954306,18 42,18 C43.1045694,18 44,18.8954305 44,20 L44,28 Z M8,28 C8,29.1045694 7.10456940,30 6,30 C4.89543060,30 4,29.1045694 4,28 L4,20 C4,18.8954305 4.89543060,18 6,18 C7.10456940,18 8,18.8954305 8,20 L8,28 Z" fill="currentColor">
             </svg>`,
       title: "Enter VR",
-      onClick: () =>
+      onClick: () =>{
+        if(panelParent != null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
         app.xr.start(
           app.root.findComponent("camera"),
           "immersive-vr",
           "local-floor"
-        ),
+        )
+      },
     });
     container.appendChild(vrButton);
   }
@@ -326,6 +356,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       title: "Enter AR",
       onClick: async () => {
         try {
+          if(panelParent != null) createInformationPanel(bbox, templeInfoAsset.resources[0]);
           entity.camera.clearColor = new pc.Color(0,0,0,0);
           app.xr.start(
             app.root.findComponent("camera"),
